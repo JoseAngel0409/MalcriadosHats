@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchBar = document.querySelector('.search-bar');
     const header = document.getElementById('main-header');
 
+    // Verificar si el botón existe
+    if (!menuToggle) {
+        console.error('Botón hamburguesa no encontrado');
+        return;
+    }
+
     // Crear overlay
     const overlay = document.createElement('div');
     overlay.className = 'menu-overlay';
@@ -19,18 +25,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('no-scroll');
     }
 
+    // Evento click en el botón
     menuToggle.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleMenu();
     });
 
+    // Cerrar al hacer clic en overlay
     overlay.addEventListener('click', () => {
-        if (mobileMenu.classList.contains('active')) toggleMenu();
+        if (mobileMenu.classList.contains('active')) {
+            toggleMenu();
+        }
     });
 
-    mobileMenu.querySelectorAll('a').forEach(link => {
+    // Cerrar al hacer clic en un enlace del menú
+    const links = mobileMenu.querySelectorAll('a');
+    links.forEach(link => {
         link.addEventListener('click', () => {
-            if (mobileMenu.classList.contains('active')) toggleMenu();
+            if (mobileMenu.classList.contains('active')) {
+                toggleMenu();
+            }
         });
     });
 
@@ -46,26 +60,29 @@ document.addEventListener('DOMContentLoaded', () => {
     handleScroll();
 
     // 3. Buscador
-    searchToggle.addEventListener('click', (e) => {
-        e.preventDefault();
-        searchBar.classList.toggle('open');
-        if (searchBar.classList.contains('open')) {
-            searchBar.querySelector('input').focus();
-        }
-    });
+    if (searchToggle && searchBar) {
+        searchToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            searchBar.classList.toggle('open');
+            if (searchBar.classList.contains('open')) {
+                const input = searchBar.querySelector('input');
+                if (input) input.focus();
+            }
+        });
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && searchBar.classList.contains('open')) {
-            searchBar.classList.remove('open');
-        }
-    });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && searchBar.classList.contains('open')) {
+                searchBar.classList.remove('open');
+            }
+        });
 
-    document.addEventListener('click', (e) => {
-        if (searchBar.classList.contains('open') &&
-            !searchBar.contains(e.target) &&
-            e.target !== searchToggle &&
-            !searchToggle.contains(e.target)) {
-            searchBar.classList.remove('open');
-        }
-    });
+        document.addEventListener('click', (e) => {
+            if (searchBar.classList.contains('open') &&
+                !searchBar.contains(e.target) &&
+                e.target !== searchToggle &&
+                !searchToggle.contains(e.target)) {
+                searchBar.classList.remove('open');
+            }
+        });
+    }
 });
