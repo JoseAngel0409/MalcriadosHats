@@ -291,4 +291,11 @@ header.scroll .navbar {
     .search-bar.open {
         max-height: 120px;
     }
+    /* Asegurar que el menú móvil y overlay estén por encima */
+.mobile-menu {
+    z-index: 9999 !important;
+}
+.menu-overlay {
+    z-index: 9998 !important;
+}
 }
