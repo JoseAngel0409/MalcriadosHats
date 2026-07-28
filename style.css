@@ -70,16 +70,21 @@ header {
     font-weight: 400;
 }
 
-/* ===== NAVBAR (barra inferior) con FLEX ===== */
+/* ===== NAVBAR ===== */
 .navbar {
     display: flex;
     align-items: center;
-    justify-content: center; /* centra el menú */
-    padding: 10px 60px;
+    justify-content: space-between; /* Distribuye espacio entre menú e iconos */
+    padding: 10px 40px;
     border-top: 1px solid #ececec;
     border-bottom: 1px solid #ececec;
-    position: relative; /* necesario para posicionar iconos */
     transition: padding 0.3s ease;
+    position: relative;
+}
+
+/* Checkbox oculto */
+.menu-checkbox {
+    display: none;
 }
 
 /* Botón hamburguesa (oculto en desktop) */
@@ -93,14 +98,14 @@ header {
     padding: 0.5rem 0;
 }
 
-/* Menú de navegación */
+/* Menú centrado automáticamente */
 nav {
-    display: flex;
-    justify-content: center;
+    margin: 0 auto;
 }
+
 nav ul {
     display: flex;
-    gap: 60px;
+    gap: 35px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -135,14 +140,12 @@ nav ul li a:hover {
     color: #B22222;
 }
 
-/* Iconos: posición absoluta a la derecha */
+/* Iconos integrados en el flujo normal (sin absolute) */
 .icons {
+    position: static;
     display: flex;
-    gap: 30px;
-    position: absolute;
-    right: 60px;
-    top: 50%;
-    transform: translateY(-50%);
+    gap: 20px;
+    flex-shrink: 0;
 }
 .icons a {
     color: #111;
@@ -153,7 +156,7 @@ nav ul li a:hover {
     color: #B22222;
 }
 
-/* ===== MENÚ MÓVIL (desplegable lateral) ===== */
+/* ===== MENÚ MÓVIL (controlado por checkbox) ===== */
 .mobile-menu {
     position: fixed;
     top: 0;
@@ -163,21 +166,37 @@ nav ul li a:hover {
     height: 100vh;
     background: white;
     padding: 2rem;
-    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
     transform: translateX(-100%);
     transition: transform 0.3s ease-in-out;
-    z-index: 1000;
+    z-index: 9999;
     overflow-y: auto;
 }
-.mobile-menu.active {
+
+/* Botón de cierre X */
+.menu-close {
+    display: none; /* se muestra solo en móvil */
+    font-size: 2rem;
+    color: #111;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+/* Cuando el checkbox está marcado, abre el menú y el overlay */
+.navbar:has(.menu-checkbox:checked) ~ .mobile-menu {
     transform: translateX(0);
 }
+.navbar:has(.menu-checkbox:checked) ~ .menu-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Estilos internos del menú móvil */
 .mobile-menu ul {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
-    margin-top: 3rem;
 }
 .mobile-menu ul li a {
     text-decoration: none;
@@ -192,22 +211,18 @@ nav ul li a:hover {
     color: #B22222;
 }
 
-/* Overlay del menú móvil */
+/* Overlay */
 .menu-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
+    background: rgba(0,0,0,0.6);
+    z-index: 9998;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease;
-}
-.menu-overlay.active {
-    opacity: 1;
-    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 /* ===== BUSCADOR DESPLEGABLE ===== */
@@ -251,51 +266,71 @@ header.scroll .logo a {
     font-size: 45px;
 }
 header.scroll .navbar {
-    padding: 6px 60px;
+    padding: 6px 40px;
 }
 
-/* ===== RESPONSIVE ===== */
+/* ====================================================
+   RESPONSIVE
+==================================================== */
+
+/* Ajustes para pantallas medianas / tablets / landscape */
+@media (min-width: 901px) and (max-width: 1100px) {
+    nav ul {
+        gap: 20px;
+    }
+    nav ul li a {
+        font-size: 13px;
+    }
+}
+
+/* Dispositivos móviles en HORIZONTAL (landscape) */
+@media (max-height: 500px) and (orientation: landscape) {
+    .menu-toggle {
+        display: block !important;
+    }
+    nav {
+        display: none !important;
+    }
+    .navbar {
+        justify-content: space-between;
+        padding: 8px 20px;
+    }
+    .mobile-menu ul {
+        margin-top: 1rem;
+        gap: 1rem;
+    }
+}
+
+/* Móviles (≤ 900px) */
 @media (max-width: 900px) {
     /* Mostrar botón hamburguesa */
     .menu-toggle {
         display: block;
-        position: absolute;
-        left: 25px;
-        top: 50%;
-        transform: translateY(-50%);
+        cursor: pointer;
     }
-
     /* Ocultar menú de escritorio */
     nav {
         display: none;
     }
-
+    /* Ajustar navbar */
     .navbar {
-        justify-content: center;
+        justify-content: space-between;
         padding: 10px 25px;
     }
-
     .icons {
-        position: static; /* quitamos absoluto */
-        transform: none;
         gap: 20px;
-        margin-left: auto; /* empuja a la derecha */
     }
-
+    /* Mostrar botón de cierre X */
+    .menu-close {
+        display: block;
+        text-align: right;
+    }
     /* Ajuste del logo */
     .logo a {
         font-size: 2.2rem;
     }
-
     /* Buscador más alto en móvil */
     .search-bar.open {
         max-height: 120px;
     }
-    /* Asegurar que el menú móvil y overlay estén por encima */
-.mobile-menu {
-    z-index: 9999 !important;
-}
-.menu-overlay {
-    z-index: 9998 !important;
-}
 }

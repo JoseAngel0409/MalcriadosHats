@@ -1,54 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
 
-    // Elementos
-    const menuToggle = document.querySelector('.menu-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const searchToggle = document.querySelector('.search-toggle');
-    const searchBar = document.querySelector('.search-bar');
+    // =====================================================
+    // 1. HEADER INTELIGENTE (scroll)
+    // =====================================================
     const header = document.getElementById('main-header');
 
-    // Verificar si el botón existe
-    if (!menuToggle) {
-        console.error('Botón hamburguesa no encontrado');
-        return;
-    }
-
-    // Crear overlay
-    const overlay = document.createElement('div');
-    overlay.className = 'menu-overlay';
-    document.body.appendChild(overlay);
-
-    // 1. Menú hamburguesa
-    function toggleMenu() {
-        mobileMenu.classList.toggle('active');
-        overlay.classList.toggle('active');
-        document.body.classList.toggle('no-scroll');
-    }
-
-    // Evento click en el botón
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleMenu();
-    });
-
-    // Cerrar al hacer clic en overlay
-    overlay.addEventListener('click', () => {
-        if (mobileMenu.classList.contains('active')) {
-            toggleMenu();
-        }
-    });
-
-    // Cerrar al hacer clic en un enlace del menú
-    const links = mobileMenu.querySelectorAll('a');
-    links.forEach(link => {
-        link.addEventListener('click', () => {
-            if (mobileMenu.classList.contains('active')) {
-                toggleMenu();
-            }
-        });
-    });
-
-    // 2. Header scroll
     function handleScroll() {
         if (window.scrollY > 100) {
             header.classList.add('scroll');
@@ -56,12 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
             header.classList.remove('scroll');
         }
     }
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
 
-    // 3. Buscador
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Ejecutar al cargar
+
+    // =====================================================
+    // 2. BUSCADOR DESPLEGABLE
+    // =====================================================
+    const searchToggle = document.querySelector('.search-toggle');
+    const searchBar = document.querySelector('.search-bar');
+
     if (searchToggle && searchBar) {
-        searchToggle.addEventListener('click', (e) => {
+        searchToggle.addEventListener('click', function(e) {
             e.preventDefault();
             searchBar.classList.toggle('open');
             if (searchBar.classList.contains('open')) {
@@ -70,13 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        document.addEventListener('keydown', (e) => {
+        // Cerrar con Escape
+        document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && searchBar.classList.contains('open')) {
                 searchBar.classList.remove('open');
             }
         });
 
-        document.addEventListener('click', (e) => {
+        // Cerrar al hacer clic fuera
+        document.addEventListener('click', function(e) {
             if (searchBar.classList.contains('open') &&
                 !searchBar.contains(e.target) &&
                 e.target !== searchToggle &&
